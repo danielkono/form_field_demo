@@ -14,14 +14,14 @@ class IntroNotifier extends StateNotifier<IntroState> {
 
   void confirm(String? name, String? age, String? reason) async {
     state = LoadingIntroState();
-    await Future.delayed(const Duration(seconds: 3));
-    
+    await Future.delayed(const Duration(seconds: 2));
+
     if (name == null || nameList.contains(name.toLowerCase())) {
       state = state.copyWith(error: "Name already taken!");
       return;
     }
     state = LoadingIntroState();
-    await Future.delayed(const Duration(seconds: 3));
+    await Future.delayed(const Duration(seconds: 1));
 
     state = ConfirmedIntroState();
   }
