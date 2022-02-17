@@ -5,6 +5,10 @@ import 'package:form_field_demo/pages/intro/intro_notifier.dart';
 import 'package:form_field_demo/pages/intro/intro_state.dart';
 import 'package:form_field_demo/pages/second/second_page.dart';
 
+///
+///https://docs.flutter.dev/cookbook/forms/validation
+///https://pub.dev/packages/ensure_visible_when_focused/example
+///
 class IntroPage extends ConsumerStatefulWidget {
   const IntroPage({Key? key}) : super(key: key);
 
