@@ -13,15 +13,23 @@ class IntroPage extends ConsumerStatefulWidget {
 }
 
 class _IntroPageState extends ConsumerState<IntroPage> {
+  //controller used to get text from fields
+
   late final TextEditingController _nameController = TextEditingController();
   late final TextEditingController _numberController = TextEditingController();
   late final TextEditingController _freeTextController =
       TextEditingController();
+
+  // focus nodes used to request focus
+  // change focus and scroll to focused widget via [EnsureVisibleWhenFocused]
   late final FocusNode _nameFocusNode = FocusNode();
   late final FocusNode _numberFocusNode = FocusNode();
   late final FocusNode _freeTextFocusNode = FocusNode();
   late final FocusNode _requestFocusNode = FocusNode();
 
+  /// Important key
+  /// we can use it to call [validate] function that will
+  /// validate all children within the form using this key
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -42,6 +50,7 @@ class _IntroPageState extends ConsumerState<IntroPage> {
   Widget build(BuildContext context) {
     final state = ref.watch(introProvider);
 
+    // listen for changes so we can change route
     ref.listen(introProvider, (previous, next) {
       if (next is ConfirmedIntroState) {
         Navigator.push(
@@ -66,14 +75,20 @@ class _IntroPageState extends ConsumerState<IntroPage> {
                           focusNode: _nameFocusNode,
                           autovalidateMode: AutovalidateMode.always,
                           decoration: InputDecoration(
-                              errorText: state.error, hintText: "Enter name"),
+                            errorText: state
+                                .error, // <- provide manual error text, like for async validation in notifier
+                            hintText: "Enter name",
+                          ),
                           validator: (val) {
                             if (val == null || val.isEmpty) {
+                              //request focus so it will automatically scroll to top wen there is a error
+                              //not working with async case
                               _nameFocusNode.requestFocus();
                               return "Cannot be empty";
                             }
                           },
                           onFieldSubmitted: (text) {
+                            //change focus on submit
                             _nextField(_nameFocusNode, _numberFocusNode);
                           },
                         ),
@@ -150,7 +165,8 @@ class _IntroPageState extends ConsumerState<IntroPage> {
                   ),
                 )),
           ),
-          if (state is LoadingIntroState)
+          if (state
+              is LoadingIntroState) // display simple loading indicator wen in loading state
             const Center(
               child: CircularProgressIndicator(),
             ),
@@ -159,6 +175,8 @@ class _IntroPageState extends ConsumerState<IntroPage> {
     );
   }
 
+  /// helper function to change focus
+  /// not complete, missing checks for has focus etc.
   void _nextField(FocusNode previous, FocusNode next) {
     previous.unfocus();
     next.requestFocus();
